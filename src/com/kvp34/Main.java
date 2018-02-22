@@ -9,8 +9,9 @@ public class Main {
     public static void main(String[] args) throws IOException {
         List<Set<String>> listOfTransactiions=fileReader("src/com/kvp34/DataFile.txt");
         Set<String> uniqueListOfProducts= getUniqueListOfProducts(listOfTransactiions);
-        float minSupport=10.00f;
-        Map<Set<String>,Float> frequentItemList=generateFrequentItemList(listOfTransactiions,uniqueListOfProducts,minSupport);
+        int minSupport=50;
+        Map<Set<String>,Integer> frequentItemList=generateFrequentItemList(listOfTransactiions,uniqueListOfProducts,minSupport);
+
         System.out.println(frequentItemList);
     }
 
@@ -28,14 +29,14 @@ public class Main {
         return  transactions;
         }
 
-    public static float findSupport(List<Set<String>> transactionList,Set<String> itemSet){
+    public static int findSupport(List<Set<String>> transactionList,Set<String> itemSet){
         List<Set<String>> transactionSubset=new ArrayList<Set<String>>();
         for (Set<String> s : transactionList) {
             if(s.containsAll(itemSet)) {
                 transactionSubset.add(s);
             }
         }
-       return 100.00f*(((float)transactionSubset.size())/((float)transactionList.size()));
+       return (int)(100.00f*((float)transactionSubset.size()/(float) transactionList.size()));
     }
 
     public static Set<String> getUniqueListOfProducts(List<Set<String>> transactionList){
@@ -50,12 +51,12 @@ public class Main {
         return uniqueItemList;
     }
 
-    public static Map<Set<String>,Float> generateFrequentItemList(List<Set<String>> transactionList, Set<String> uniqueItemList, float minSupport){
-        Map<Set<String>,Float> frequentItemList=new HashMap<Set<String>,Float>();
+    public static Map<Set<String>,Integer> generateFrequentItemList(List<Set<String>> transactionList, Set<String> uniqueItemList, int minSupport){
+        Map<Set<String>,Integer> frequentItemList=new HashMap<Set<String>,Integer>();
         for(String s:uniqueItemList){
             Set<String> singleItemSet=new HashSet<String>();
             singleItemSet.add(s);
-            float support=findSupport(transactionList,singleItemSet);
+            int support=findSupport(transactionList,singleItemSet);
             if(support>=minSupport) {
                 frequentItemList.put(singleItemSet, support);
             }
