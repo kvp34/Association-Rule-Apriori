@@ -1,0 +1,6 @@
+Milk, Bread, Sugar
+Sugar, Egg, Bread, Butter
+Bread, Butter
+Butter, Cheese
+Salt, Sugar
+Salt, Sugar
