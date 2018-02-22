@@ -7,27 +7,24 @@ import java.util.*;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        List<Set<String>> tran=fileReader("src/com/kvp34/DataFile.txt");
-
-        Set<String> itemset=new HashSet<String>();
-        itemset.add("Sugar");
-
-        float support=findSupport(tran,itemset);
-        System.out.println(support);
-
+        List<Set<String>> listOfTransactiions=fileReader("src/com/kvp34/DataFile.txt");
+        Set<String> uniqueListOfProducts= getUniqueListOfProducts(listOfTransactiions);
+        float minSupport=10.00f;
+        Map<Set<String>,Float> frequentItemList=generateFrequentItemList(listOfTransactiions,uniqueListOfProducts,minSupport);
+        System.out.println(frequentItemList);
     }
 
     public static List<Set<String>> fileReader(String filePath) throws IOException {
         File f = new File(filePath);
-        BufferedReader in = new BufferedReader(new FileReader(f));
-        String st;
+        BufferedReader br = new BufferedReader(new FileReader(f));
+        String eachLine;
         List<Set<String>> transactions=new ArrayList<Set<String>>();
 
-        while ((st=in.readLine())!=null){
-            Set<String> items=new HashSet<String>(Arrays.asList(st.split(", ")));
+        while ((eachLine=br.readLine())!=null){
+            Set<String> items=new HashSet<String>(Arrays.asList(eachLine.split(", ")));
             transactions.add(items);
         }
-        in.close();
+        br.close();
         return  transactions;
         }
 
@@ -38,6 +35,31 @@ public class Main {
                 transactionSubset.add(s);
             }
         }
-       return ((float)transactionSubset.size())/((float)transactionList.size());
+       return 100.00f*(((float)transactionSubset.size())/((float)transactionList.size()));
+    }
+
+    public static Set<String> getUniqueListOfProducts(List<Set<String>> transactionList){
+        Set<String> uniqueItemList=new HashSet<String>();
+        for(Set<String> eachTransaction:transactionList)
+        {
+            for(String eachItem:eachTransaction)
+            {
+                uniqueItemList.add(eachItem);
+            }
+        }
+        return uniqueItemList;
+    }
+
+    public static Map<Set<String>,Float> generateFrequentItemList(List<Set<String>> transactionList, Set<String> uniqueItemList, float minSupport){
+        Map<Set<String>,Float> frequentItemList=new HashMap<Set<String>,Float>();
+        for(String s:uniqueItemList){
+            Set<String> singleItemSet=new HashSet<String>();
+            singleItemSet.add(s);
+            float support=findSupport(transactionList,singleItemSet);
+            if(support>=minSupport) {
+                frequentItemList.put(singleItemSet, support);
+            }
+        }
+        return frequentItemList;
     }
 }
