@@ -8,7 +8,13 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         List<Set<String>> tran=fileReader("src/com/kvp34/DataFile.txt");
-        System.out.println(tran);
+
+        Set<String> itemset=new HashSet<String>();
+        itemset.add("Sugar");
+
+        float support=findSupport(tran,itemset);
+        System.out.println(support);
+
     }
 
     public static List<Set<String>> fileReader(String filePath) throws IOException {
@@ -24,4 +30,14 @@ public class Main {
         in.close();
         return  transactions;
         }
+
+    public static float findSupport(List<Set<String>> transactionList,Set<String> itemSet){
+        List<Set<String>> transactionSubset=new ArrayList<Set<String>>();
+        for (Set<String> s : transactionList) {
+            if(s.containsAll(itemSet)) {
+                transactionSubset.add(s);
+            }
+        }
+       return ((float)transactionSubset.size())/((float)transactionList.size());
+    }
 }
