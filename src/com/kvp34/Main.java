@@ -9,10 +9,18 @@ public class Main {
     public static void main(String[] args) throws IOException {
         List<Set<String>> listOfTransactiions=fileReader("src/com/kvp34/DataFile.txt");
         Set<String> uniqueListOfProducts= getUniqueListOfProducts(listOfTransactiions);
-        int minSupport=50;
+        int minSupport=1;
         Map<Set<String>,Integer> frequentItemList=generateFrequentItemList(listOfTransactiions,uniqueListOfProducts,minSupport);
 
         System.out.println(frequentItemList);
+
+        Set<String> br=new HashSet<String>();
+        br.add("Salt");
+        Set<String> bt=new HashSet<String>();
+        bt.add("Sugar");
+        float conf=getConfidence(listOfTransactiions,br,bt);
+
+        System.out.println(conf);
     }
 
     public static List<Set<String>> fileReader(String filePath) throws IOException {
@@ -36,7 +44,15 @@ public class Main {
                 transactionSubset.add(s);
             }
         }
-       return (int)(100.00f*((float)transactionSubset.size()/(float) transactionList.size()));
+       return transactionSubset.size();//(int)(100.00f*((float)transactionSubset.size()/(float) transactionList.size()));
+    }
+    public static float getConfidence(List<Set<String>> transactionList,Set<String> LHS, Set<String> RHS){
+        float confidence;
+        Set<String> mergedSet=new HashSet<String>();
+        mergedSet.addAll(LHS);
+        mergedSet.addAll(RHS);
+        confidence=((float)findSupport(transactionList,mergedSet))/(float)(findSupport(transactionList,LHS));
+        return confidence;
     }
 
     public static Set<String> getUniqueListOfProducts(List<Set<String>> transactionList){
@@ -63,4 +79,6 @@ public class Main {
         }
         return frequentItemList;
     }
+
+
 }
